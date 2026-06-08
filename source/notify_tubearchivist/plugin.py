@@ -29,16 +29,8 @@ logger = logging.getLogger("Unmanic.Plugin.notify_tubearchivist")
 
 class Settings(PluginSettings):
     settings = {
-        "ta_url": "",
-        "ta_token": "",
-    }
-    form_settings = {
-        "ta_url": {
-            "label": "TubeArchivist URL",
-        },
-        "ta_token": {
-            "label": "TubeArchivist API Token",
-        },
+        "TubeArchivist URL": "http://",
+        "TubeArchivist API Token": "",
     }
 
 def ta_video_exists(ta_url: str, ta_token: str, video_id: str) -> bool:
@@ -49,7 +41,7 @@ def ta_video_exists(ta_url: str, ta_token: str, video_id: str) -> bool:
 
     try:
         r = requests.get(f"{ta_url}/api/video/{video_id}", headers=headers, timeout=10)
-        return r.status_code = 200
+        return r.status_code == 200
     except requests.exceptions.RequestException as e:
         logger.error(f"Error connecting to TubeArchivist API: {e}")
         return False
@@ -67,21 +59,25 @@ def notify_ta(ta_url: str, ta_token: str, video_id: str):
     try:
         r = requests.post(f"{ta_url}/api/refresh/", json=payload, headers=headers, timeout=10)
 
-        if r.status_code = 200:
+        if r.status_code == 200:
             logger.info(f"Successfully triggered TubeArchivist refresh for {video_id}")
         else:
             logger.error(f"Failed to trigger TubeArchivist refresh. Status code: {r.status_code}, Response: {r.text}")
     except requests.exceptions.RequestException as e:
         logger.error(f"Error connecting to TubeArchivist API: {e}")
 
-def on_postprocessor_task_results(data):
+def on_postprocessor_task_results(data: dict):
     if not data.get('destination_files'):
         loggloggering.info('No destination files')
         return data
 
-    settings = Settings(library_id=data.get('library_id'))
-    ta_url = settings.get_setting('ta_url')
-    ta_token = settings.get_setting('ta_token')
+    if data.get('library_id'):
+        settings = Settings(library_id=data.get('library_id'))
+    else:
+        settings = Settings()
+
+    ta_url = settings.get_setting('TubeArchivist URL')
+    ta_token = settings.get_setting('TubeArchivist API Token')
 
     if not ta_url or not ta_token:
         logger.warning("TubeArchivist URL/API Token is not configured, skipping")

@@ -6,7 +6,7 @@
     Date:       June 8th, 2026
 
     Copyright:
-        Copyright (C) 2026
+        Copyright (C) 2026 Damien Sorel
 
         This program is free software: you can redistribute it and/or modify it under the terms of the GNU General
         Public License as published by the Free Software Foundation, version 3.
@@ -30,8 +30,8 @@ logger = logging.getLogger("Unmanic.Plugin.notify_tubearchivist")
 
 class Settings(PluginSettings):
     settings = {
-        "TubeArchivist URL": "http://",
-        "TubeArchivist API Token": "",
+        "Tube Archivist URL": "http://",
+        "Tube Archivist API Token": "",
     }
 
 def notify_ta(ta_url: str, ta_token: str, video_ids: list[str]):
@@ -48,11 +48,11 @@ def notify_ta(ta_url: str, ta_token: str, video_ids: list[str]):
         r = requests.post(f"{ta_url}/api/refresh/", json=payload, headers=headers, timeout=10)
 
         if r.status_code == 200:
-            logger.info(f"Successfully triggered TubeArchivist refresh for {video_ids}.")
+            logger.info(f"Successfully triggered Tube Archivist refresh for {video_ids}.")
         else:
-            logger.error(f"Failed to trigger TubeArchivist refresh for {video_ids}. Status code: {r.status_code}, Response: {r.text}.")
+            logger.error(f"Failed to trigger Tube Archivist refresh for {video_ids}. Status code: {r.status_code}, Response: {r.text}.")
     except requests.exceptions.RequestException as e:
-        logger.error(f"Error connecting to TubeArchivist API: {e}.")
+        logger.error(f"Error connecting to Tube Archivist API: {e}.")
 
 def on_postprocessor_task_results(data: dict):
     if not data.get('destination_files'):
@@ -64,11 +64,11 @@ def on_postprocessor_task_results(data: dict):
     else:
         settings = Settings()
 
-    ta_url = cast(str, settings.get_setting('TubeArchivist URL'))
-    ta_token = cast(str, settings.get_setting('TubeArchivist API Token'))
+    ta_url = cast(str, settings.get_setting('Tube Archivist URL'))
+    ta_token = cast(str, settings.get_setting('Tube Archivist API Token'))
 
     if not ta_url or not ta_token:
-        logger.error("TubeArchivist URL/API Token is not configured.")
+        logger.error("Tube Archivist URL/API Token is not configured.")
         return data
     
     video_ids = [Path(file).stem for file in data.get('destination_files', [])]

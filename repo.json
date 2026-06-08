@@ -1,0 +1,30 @@
+{
+    "repo": {
+        "id": "repository.mistic100",
+        "name": "mistic100 Repo",
+        "icon": "",
+        "repo_data_directory": "https://raw.githubusercontent.com/mistic100/unmanic-plugins/repo/",
+        "repo_data_url": "https://raw.githubusercontent.com/mistic100/unmanic-plugins/repo/repo.json"
+    },
+    "plugins": [
+        {
+            "id": "notify_tubearchivist",
+            "name": "Notify Tube Archivist",
+            "author": "mistic100",
+            "version": "0.0.1",
+            "tags": "post-processor",
+            "description": "Intructs Tube Archivist to reindex a video after transcoding.",
+            "icon": "https://raw.githubusercontent.com/mistic100/unmanic-plugins/main/source/notify_tubearchivist/icon.png",
+            "platform": [
+                "all"
+            ],
+            "priorities": {
+                "on_postprocessor_task_results": 0
+            },
+            "compatibility": [
+                1,
+                2
+            ]
+        }
+    ]
+}
